@@ -22,6 +22,26 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
+app.get("/api/tournaments", (req, res) => {
+  res.json({
+    success: true,
+    tournaments: [
+      {
+        id: 1,
+        name: "Bharat eSports Championship",
+        mode: "Battle Royale",
+        map: "Bermuda",
+        status: "upcoming"
+      },
+      {
+        id: 2,
+        name: "Bharat eSports Squad Cup",
+        mode: "Clash Squad",
+        map: "Bermuda",
+        status: "upcoming"
+      }
+    ]
+  });
+});
   console.log(`Bharat eSports API running on port ${PORT}`);
 });
