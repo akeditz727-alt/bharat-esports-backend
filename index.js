@@ -1,36 +1,27 @@
 const express = require("express");
 const cors = require("cors");
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.json({ success: true, message: "Bharat eSports Backend is running!" });
-});
+let tournaments = [{ id: 1, name: "BGMI Bharat Cup", game: "BGMI", prize: "₹1,00,000" }];
+let registrations = [];
 
-app.get("/api/health", (req, res) => {
-  res.json({ success: true, status: "online" });
+app.get("/", (req, res) => res.send("Backend Running"));
+app.get("/api/tournaments", (req, res) => res.json({ success: true, data: tournaments }));
+app.get("/api/registrations", (req, res) => res.json({ success: true, data: registrations }));
+
+app.post("/api/tournaments/:id/register", (req, res) => {
+  const { teamName, phone } = req.body;
+  registrations.push({ teamName, phone, date: new Date() });
+  res.json({ success: true, message: "Registered for " + teamName });
 });
 
 app.post("/api/auth/send-otp", (req, res) => {
-  const { phone } = req.body;
-  if (!phone) return res.status(400).json({ success: false, message: "Phone required" });
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  console.log(`DEMO OTP for ${phone}: ${otp}`);
-  res.json({ success: true, message: "Demo OTP sent", demoOtp: otp });
+  res.json({ success: true, demoOtp: otp });
 });
 
-app.post("/api/auth/verify-otp", (req, res) => {
-  const { phone, otp } = req.body;
-  if (!otp || otp.length !== 6) {
-    return res.status(400).json({ success: false, message: "Invalid OTP" });
-  }
-  res.json({ success: true, message: "Verified", token: "demo_token_" + Date.now() });
-});
-
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, "0.0.0.0", () => console.log("Running"));
